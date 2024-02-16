@@ -1,0 +1,201 @@
+public class Proprietario { 
+	private String nome;
+	private int nif;
+	private String email;
+	private int telefone;
+
+	private final String NOME_POR_OMISSAO = "Nome";
+	private final int NIF_POR_OMISSAO = 12345678;
+	private final String EMAIL_POR_OMISSAO = "email@gmail.com";
+	private static final int TELEFONE_POR_OMISSAO = 911111111;
+
+	public Proprietario() {
+		this.nome = NOME_POR_OMISSAO;
+		this.nif = NIF_POR_OMISSAO;
+		this.email = EMAIL_POR_OMISSAO;
+		this.telefone = TELEFONE_POR_OMISSAO;
+	}
+
+	public Proprietario(Proprietario proprietario) {
+		this.nome = proprietario.getNome();
+		this.nif = proprietario.getNif();
+		this.email = proprietario.getEmail();
+		this.telefone = proprietario.getTelefone();
+	}
+
+	public int getTelefone() {
+		return this.telefone; 
+	}
+
+	public void setTelefone(int telefone) {
+		if(String.valueOf(telefone).length == 9) {
+			this.telefone = telefone;
+		} else {
+			throw new ArgumentoInvalidoException("O número de telefone tem de possuir 9 digitos.")
+		}
+	}
+
+	
+}
+
+
+
+
+public class ArgumentoInvalidoException extends IllegalArgumentException {
+	public NumeroTelefoneInvalido(String erro) {
+		super(erro);
+	}
+}
+
+
+
+public abstract class Imovel implements Serializable {
+	private String morada;
+	private String localidade;
+	private float areaUtil;
+	private float preco;
+
+
+	public abstract float calcularValorImovel();
+}
+
+public abstract class ImovelHabitacao extends Imovel { 
+	private int qtdQuartos;
+}
+
+public class Apartamento extends ImovelHabitacao {
+	private final float COMISSAO = 0.04;
+	private final float CONDOMINIO = 0.50; 
+
+	private static int totalApartamentos = 0;
+
+	public Apartamento() { 
+		totalApartamentos++;
+	}
+
+	public int getTotalApartamentos() { 
+		return totalApartamentos;
+	}
+
+	@Override
+	public float calcularValorImovel() { 
+		return getPreco() + (getPreco() * COMISSAO);
+	}
+
+	@Override 
+	public float calcularCondominio() { 
+		return getAreaUtil() * CONDOMINIO;
+	}
+}
+
+public class Moradia extends ImovelHabitacao {
+	private final float COMISSAO_INFERIOR_150000 = 0.05;
+	private final float COMISSAO_SUPERIOR_150000 = 0.06;
+
+	private float areaExterior;
+
+	@Override
+	public float calcularValorImovel() { 
+		if(getPreco() < 150000)
+			return getPreco() + (getPreco() * COMISSAO_INFERIOR_150000);
+		else
+			return getPreco() + (getPreco() * COMISSAO_SUPERIOR_150000);
+	}
+	
+	@Override
+	public boolean equals(Object outraMoradia) { 
+		Moradia moradia = (Moradia) outraMoradia;
+		return (this.getMorada() == moradia.getMorada() &&
+				this.getLocalidade() == moradia.getLocalidade() &&
+				this.getAreaUtil() == moradia.getAreaUtil() &&
+				this.getPreco() == moradia.getPreco() &&
+				this.getAreaExterior() == moradia.getAreaExterior());
+	}
+}
+
+public class Escritorio extends Imovel implements Condominio {
+	private final float COMISSAO = 0.07;
+	private final float CONDOMINIO = 0.40;
+	
+
+	@Override
+	public float calcularValorImovel() { 
+		return getPreco() + (getPreco() * COMISSAO);
+	}
+
+	@Override 
+	public float calcularCondominio() { 
+		return getAreaUtil() * CONDOMINIO;
+	}
+}
+
+
+
+
+public class OrdernarPorLocalidadeERespetivaArea implements Comparator<Imovel> { 
+	@Override
+	public int compare(Imovel e, Imovel e2) { 
+		if(e.getLocalidade().compareTo(e2.getLocalidade()) == 0 {
+			return e.getAreaUtil().compareTo(e2.getAreaUtil());
+		} else
+			return e.getLocalidade().compareTo(e2.getLocalidade());
+	}
+}
+
+public interface Condominio { 
+	float calcularCondominio();
+}
+
+
+
+
+
+
+public class ListaImoveis { 
+	private ArrayList<Imovel> listaImoveis;
+
+	public boolean eliminarImovel(String localidade) { 
+		Collections.sort(listaImoveis, new OrdenarPorLocalidadeERespetivaArea());
+		
+		for(int i = 0; i < listaImoves.size(); i++) {
+			if(listaImoveis.get(i).getLocalidade().equals(localidade) { 
+				return listaImoveis.remove(i);
+			}
+		}
+
+		return false;
+	}
+
+	public void calcularImoveis() { 
+		System.out.println("APARTAMENTOS:");
+
+		for(Imovel imovel : listaImoveis) { 
+			if(imovel instanceof Apartamento)
+				System.out.println(imovel.);
+
+		.
+		.
+		.
+
+		}
+	}
+
+
+	public boolean exportarParaFicheiro(String ficheiro) { 
+		try {
+			FileOutputStream fos = new FileOutputStream(ficheiro)
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			for(Imovel imovel : listaImoveis) { 
+				oos.writeObject(imovel);
+			}
+			oos.close();
+			fos.close();
+		} catch (IOException i) { io.printStackTrace(); }
+	}
+
+
+}
+
+
+
+
